@@ -1,11 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    {{product}}
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>product</title>
+    <!-- css files -->
+    <link rel="stylesheet" href="../static/files/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../static/files/css/lightslider.css" />
+    <link rel="stylesheet" href="../static/files/css/style.css" />
+    <!-- js files -->
+    <script src="../static/files/js/bootstrap.bundle.min.js"></script>
+    <script src="../static/files/js/jquery.js"></script>
+    <script src="../static/files/js/lightslider.js"></script>
+    <script src="../static/files/js/script.js"></script>
+  </head>
+  <body>
+    <div class="container-fluid">
+      {% include 'navbar.html'%}
+      <!-- {{product}} -->
+      <section class="row my-5">
+        <div class="col-md-4">
+          <!-- product variable holds the Current Product, This comes from /single_item route in app.py  -->
+          <!-- product variable is indexed from 0  - 5  to access specific product details
+            product[1] is product name, product[5] represent product image etc..  -->
+          <img
+            src="../static/images/{{product[5]}}"
+            alt=""
+            width="300"
+            height="300"
+            class="img-thumbnail shadow p-4"
+          /><br /><br />
+          <h3>{{ product[1] }}</h3>
+        </div>
+
+        <div class="col-md-8">
+          <div>
+            <p class="text-muted">{{ product[2] }}</p>
+            <h4>KES {{ product[3] }}</h4>
+            <b class="text-danger">Category: {{ product[4] }}</b> <br /><br />
+          </div>
+          <div>
+            <!-- check if the user is logged in -->
+            {% if session['key']%}
+            <!-- create a form that has a n action to mpesa route -->
+            <form action="/mpesa" method="post">
+              <!-- create a phone number input , that user wil enter the phone number tosend STK push to; -->
+              <input
+                type="number"
+                name="phone"
+                placeholder="Enter phone 2547********"
+                class="form-control"
+              />
+
+              <label for="">To Pay KES</label>
+              <!-- bind the product amount from the database -->
+              <input
+                type="number"
+                name="amount"
+                value="{{product[3]}}"
+                class="form-control"
+              />
+
+              <input type="submit" class="btn btn-dark" value="Pay Now" />
+            </form>
+            <!-- if user is not logged in -->
+            {% else %}
+            <h4>Please Sign In To Make Payment</h4>
+            <a href="/signin">Sign In</a>
+            {% endif %}
+          </div>
+        </div>
+      </section>
+      {% include 'footer.html'%}
+    </div>
+  </body>
 </html>
