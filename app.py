@@ -76,9 +76,25 @@ def upload():
             return render_template('upload.html', message="Failed to add the product")
     else:
         return render_template('upload.html')
-# contact us
-@app.route('/contact')
-def contact():
-    return "contact OryxSHOP"
+
+# single  item  Note this route has an product_id, It displays a product based on product_id
+@app.route('/single_item/<product_id>')
+def single(product_id):
+    # connect to db
+    connection = pymysql.connect(host="localhost", user='root', password='', database='oryxdb')
+
+    # Create SQL  - %s is a placeholder, which will take the actual ID during Query Execution.
+    sql1 = "SELECT * FROM products WHERE product_id = %s"
+
+     # Cursor - Used to run/execute above SQL
+    cursor1 = connection.cursor()
+
+     # Execute SQL providing product_id - NB: Sql had a placeholder in the Where clause thats why we provide the product_id
+    cursor1.execute(sql1, (product_id))
+
+    # Get the product retrieved 
+    product = cursor1.fetchone()
+
+    return render_template('single.html',product=product)
 
 app.run(debug=True)
