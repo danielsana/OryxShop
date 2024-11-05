@@ -97,4 +97,44 @@ def single(product_id):
 
     return render_template('single.html',product=product)
 
+# signup 
+@app.route('/signup',methods=['POST','GET'])
+def signup():
+     # Check if form was posted by user
+    if request.method == 'POST':
+            # Receive what was posted by user including username, password1,password2 email, phone
+            username = request.form['username']
+            email = request.form['email']
+            phone = request.form['phone']
+            password1 = request.form['password1']
+            password2 = request.form['password2']
+
+            # check if any of the password is less than eight x-ters and notify the user to put a password more that 8 -xters  
+            if len(password1) < 8:
+                return render_template('signup.html', error='Password must more than 8 xters')
+		
+            # Check if the 2 passwords are matching, if not notify the user to match them up.		
+            elif password1 != password2:
+                return render_template('signup.html', error='Password Do Not Match')
+            else:
+	        # Now we can save username, password, email, phone into our users table
+		# Make a connection to database
+                connection = pymysql.connect(host='localhost', user='root', password='',
+                                             database='oryxdb')
+		# Create an Insert SQL, Note the SQL has 4 placeholders, Real values to be provided later			     
+                sql = ''' 
+                     insert into users(username, password, email, phone) 
+                     values(%s, %s, %s, %s)
+                 '''
+		# Create a cursor to be used in Executing our SQL 
+                cursor = connection.cursor()
+		# Execute SQL, providing the real values to replace our placeholders 
+                cursor.execute(sql, (username, password1, email,phone))
+		# Commit to Save to database
+                connection.commit()
+		# Return a message to user to confirm successful registration.
+                return render_template('signup.html', success='Registered Successfully')
+    else:
+        return render_template('signup.html')
+
 app.run(debug=True)
