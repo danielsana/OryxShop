@@ -21,7 +21,31 @@ def home():
     cursor.execute(sql1)
     Clothes = cursor.fetchall()
 
-    return render_template('home.html', electronics=electronics , clothes =Clothes)
+    # fetch smartphones 
+    sql1 = 'select * from products where product_category = "Clothes"'
+    cursor = connection.cursor()
+    cursor.execute(sql1)
+    Clothes = cursor.fetchall()
+
+    # fetch clothes 
+    sql1 = 'select * from products where product_category = "smartphones"'
+    cursor = connection.cursor()
+    cursor.execute(sql1)
+    smartphones = cursor.fetchall()
+
+    # fetch utensils 
+    sql1 = 'select * from products where product_category = "Utensils"'
+    cursor = connection.cursor()
+    cursor.execute(sql1)
+    Utensils = cursor.fetchall()
+
+    # fetch others 
+    sql1 = 'select * from products where product_category = "Other"'
+    cursor = connection.cursor()
+    cursor.execute(sql1)
+    others = cursor.fetchall()
+
+    return render_template('home.html', electronics=electronics , clothes =Clothes, smartphones=smartphones, Utensils=Utensils, others=others)
 
 # about us
 @app.route('/upload',methods=['POST','GET'])
