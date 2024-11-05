@@ -6,7 +6,22 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return render_template('home.html')
+    # connect to db 
+    connection = pymysql.connect(host="localhost", user='root', password='', database='oryxdb')
+
+    # fetch electronics 
+    sql1 = 'select * from products where product_category = "Electronics"'
+    cursor = connection.cursor()
+    cursor.execute(sql1)
+    electronics = cursor.fetchall()
+
+    # fetch clothes 
+    sql1 = 'select * from products where product_category = "Clothes"'
+    cursor = connection.cursor()
+    cursor.execute(sql1)
+    Clothes = cursor.fetchall()
+
+    return render_template('home.html', electronics=electronics , clothes =Clothes)
 
 # about us
 @app.route('/upload',methods=['POST','GET'])
