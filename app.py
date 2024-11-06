@@ -185,5 +185,4 @@ def mpesa():
     return '<h3>Please Complete Payment in Your Phone and we will deliver in minutes</h3>' \
     '<a href="/" class="btn btn-dark btn-sm">Back to Products</a>'
 
-
 app.run(debug=True)
