@@ -4,6 +4,9 @@ import pymysql
 
 app = Flask(__name__)
 
+# set secret key to secure your session/make it unique
+app.secret_key = "AW_r%@idsjg9djg9dgj9djg9dg9dg98dg9djN*HU4AW_r%@jN*HU4AW_r%@jN*HU4"
+
 @app.route('/')
 def home():
     # connect to db 
@@ -136,5 +139,36 @@ def signup():
                 return render_template('signup.html', success='Registered Successfully')
     else:
         return render_template('signup.html')
+    
+# signin 
+@app.route('/signin',methods=['POST','GET'])
+def signin():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        # Make a connection to database
+        connection = pymysql.connect(host='localhost', user='root', password='',
+                                             database='oryxdb')
+        sql = '''
+           select * from users where username = %s and password = %s
+        '''
+        cursor = connection.cursor()
+        cursor.execute(sql, (username, password))
+
+        if cursor.rowcount == 0:
+            return render_template('signin.html', error='Invalid Credentials')  
+        else:
+            # ADD THIS
+            session['key'] = username  # link the session key with username
+            return redirect('/')  # redirect to Home Default route, After success Login
+    else:
+        return render_template('signin.html')
+
+# logout 
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect('/signin')
+
 
 app.run(debug=True)
