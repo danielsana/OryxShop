@@ -37,7 +37,7 @@ def stk_push(phone, amount):
     "Password": "{}".format(password),
     "Timestamp": "{}".format(timestamp),
     "TransactionType": "CustomerPayBillOnline",
-    "Amount": amount, # use 1 when testing
+    "Amount": '1', # use 1 when testing
     "PartyA": phone, # change to your number
     "PartyB": "174379",
     "PhoneNumber": phone,

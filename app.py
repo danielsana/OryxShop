@@ -170,5 +170,20 @@ def logout():
     session.clear()
     return redirect('/signin')
 
+# mpesa 
+# Below we only need to use a POST, as posted in our Single item
+@app.route('/mpesa', methods = ['POST'])
+def mpesa():
+    # Receive the amount and phone from single item
+    phone = request.form['phone']
+    amount = request.form['amount']
+    # import mpesa.py module
+    import mpesa
+    # Call the SIM Toolkit(stk) push function present in mpesa.py
+    mpesa.stk_push(phone, amount)
+    # SHow user below message.
+    return '<h3>Please Complete Payment in Your Phone and we will deliver in minutes</h3>' \
+    '<a href="/" class="btn btn-dark btn-sm">Back to Products</a>'
+
 
 app.run(debug=True)
