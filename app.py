@@ -100,7 +100,7 @@ def single(product_id):
 
     return render_template('single.html',product=product)
 
-# signup 
+# signup user
 @app.route('/signup',methods=['POST','GET'])
 def signup():
      # Check if form was posted by user
@@ -184,5 +184,46 @@ def mpesa():
     # SHow user below message.
     return '<h3>Please Complete Payment in Your Phone and we will deliver in minutes</h3>' \
     '<a href="/" class="btn btn-dark btn-sm">Back to Products</a>'
+
+
+# signup vendor
+@app.route('/vendorsignup',methods=['POST','GET'])
+def vendorsignup():
+     # Check if form was posted by user
+    if request.method == 'POST':
+            # Receive what was posted by user including everything
+            firstname = request.form['firstname']
+            lastname = request.form['lastname']
+            county = request.form['county']
+            password1 = request.form['password1']
+            password2 = request.form['password2']
+            email = request.form['email']
+
+            # check if any of the password is less than eight x-ters and notify the user to put a password more that 8 -xters  
+            if len(password1) < 8:
+                return render_template('vendor.html', error='Password must more than 8 xters')
+		
+            # Check if the 2 passwords are matching, if not notify the user to match them up.		
+            elif password1 != password2:
+                return render_template('vendor.html', error='Password Do Not Match')
+            else:
+	        # Now we can save username, password, email, phone into our users table
+		# Make a connection to database
+                connection = pymysql.connect(host='localhost', user='root', password='',database='oryxdb')
+		# Create an Insert SQL, Note the SQL has 4 placeholders, Real values to be provided later			     
+                sql = ''' 
+                     insert into vendors(firstname, lastname, county, password, email) 
+                     values(%s, %s, %s, %s, %s)
+                 '''
+		# Create a cursor to be used in Executing our SQL 
+                cursor = connection.cursor()
+		# Execute SQL, providing the real values to replace our placeholders 
+                cursor.execute(sql, (firstname, lastname, county, password1, email))
+		# Commit to Save to database
+                connection.commit()
+		# Return a message to user to confirm successful registration.
+                return render_template('vendor.html', success='Vendor Registered Successfully')
+    else:
+        return render_template('vendor.html')
 
 app.run(debug=True)
