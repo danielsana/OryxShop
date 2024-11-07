@@ -225,5 +225,29 @@ def vendorsignup():
                 return render_template('vendor.html', success='Vendor Registered Successfully')
     else:
         return render_template('vendor.html')
+    
+# vendorsignin 
+@app.route('/vendorsignin',methods=['POST','GET'])
+def vendorsignin():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        # Make a connection to database
+        connection = pymysql.connect(host='localhost', user='root', password='',
+                                             database='oryxdb')
+        sql = '''
+           select * from vendors where email = %s and password = %s
+        '''
+        cursor = connection.cursor()
+        cursor.execute(sql, (email, password))
+
+        if cursor.rowcount == 0:
+            return render_template('vendorsignin.html', error='Invalid Credentials')  
+        else:
+            # ADD THIS
+            session['key'] = email  # link the session key with username
+            return redirect('/upload')  # redirect to Home Default route, After success Login
+    else:
+        return render_template('vendorsignin.html')
 
 app.run(debug=True)
